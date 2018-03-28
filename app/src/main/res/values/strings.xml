@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Lista zakupów</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="action_sort_name">Sortuj według nazwy</string>
+    <string name="action_sort_count">Sortuj według ilości</string>
+    <string name="action_add_item">Dodaj element</string>
+    <string name="action_ok">Ok</string>
+    <string name="action_cancel">Anuluj</string>
+    <string name="name_request">Podaj nazwę produktu</string>
+    <string name="count_request">Podaj ilość produktu</string>
+    <string name="action_clear_list">Wyczyść listę</string>
+    <string name="action_yes">Tak</string>
+    <string name="action_no">Nie</string>
+    <string name="clear_list_confirmation">Czy na pewno chcesz usunąć wszystkie produkty?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
