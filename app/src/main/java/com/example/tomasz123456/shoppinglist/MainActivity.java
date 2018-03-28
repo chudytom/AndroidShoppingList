@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Criteria;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -95,11 +96,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void loadDataFromMemory(String filename){
-        List<ShoppingItem> items = loadShoppingListFromMemory(filename);
+//        List<ShoppingItem> items = loadShoppingListFromMemory(filename);
+//        final List<ShoppingItem> items = new ArrayList<>();
         shoppingList.clear();
-        for (ShoppingItem item: items) {
-            shoppingList.add(item);
-        }
+        new ReadFromMemoryAsync(filename, getApplicationContext(), new ReadFromMemoryAsync.AsyncResponse(){
+
+            @Override
+            public void processFinish(List<ShoppingItem> output) {
+                shoppingList.addAll(output);
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        for (ShoppingItem item: items) {
+//            shoppingList.add(item);
+//        }
         sortItems();
     }
 
@@ -189,7 +198,9 @@ public class MainActivity extends AppCompatActivity {
                 }else if (id== R.id.countOptionId){
                     setSortingPreference(SortCriteria.Count);
                 }
-                saveShoppingListInMemory(shoppingList, listFilename);
+                new WriteToMemoryAsync(listFilename, getApplicationContext(), shoppingList)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                saveShoppingListInMemory(shoppingList, listFilename);
                 sortItems();
             }
         });
@@ -235,7 +246,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 shoppingList.clear();
-                saveShoppingListInMemory(shoppingList, listFilename);
+                new WriteToMemoryAsync(listFilename, getApplicationContext(), shoppingList)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                saveShoppingListInMemory(shoppingList, listFilename);
                 shoppingItemsAdapter.notifyDataSetChanged();
             }
         });
@@ -281,7 +294,9 @@ public class MainActivity extends AppCompatActivity {
                         capitalLetter(nameInput.getText().toString()),
                         countInput.getValue());
                 shoppingList.add(item);
-                saveShoppingListInMemory(shoppingList, listFilename);
+                new WriteToMemoryAsync(listFilename, getApplicationContext(), shoppingList)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                saveShoppingListInMemory(shoppingList, listFilename);
                 sortItems();
             }
         });
@@ -302,38 +317,38 @@ public class MainActivity extends AppCompatActivity {
                 + original.substring(1).toLowerCase();
     }
 
-    private  void saveShoppingListInMemory(List<ShoppingItem> shoppingItems, String filename){
-//        String filename = "shoppingListFile";
-//        File file = new File(context.getFilesDir(), filename);
-//        FileOutputStream outputStream;
-        try {
-            FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
-            objectStream.writeObject(shoppingItems);
-            objectStream.close();
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+//    private  void saveShoppingListInMemory(List<ShoppingItem> shoppingItems, String filename){
+////        String filename = "shoppingListFile";
+////        File file = new File(context.getFilesDir(), filename);
+////        FileOutputStream outputStream;
+//        try {
+//            FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+//            ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
+//            objectStream.writeObject(shoppingItems);
+//            objectStream.close();
+//        }catch (FileNotFoundException e){
+//            e.printStackTrace();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//    }
 
-    private  List<ShoppingItem> loadShoppingListFromMemory(String filename){
-        List<ShoppingItem> shoppingItems = new ArrayList<>();
-        try{
-            FileInputStream inputStream = openFileInput(filename);
-            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
-            shoppingItems = (List<ShoppingItem>) objectStream.readObject();
-            objectStream.close();
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
-            e.printStackTrace();
-        }
-        return  shoppingItems;
-    }
+//    private  List<ShoppingItem> loadShoppingListFromMemory(String filename){
+//        List<ShoppingItem> shoppingItems = new ArrayList<>();
+//        try{
+//            FileInputStream inputStream = openFileInput(filename);
+//            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
+//            shoppingItems = (List<ShoppingItem>) objectStream.readObject();
+//            objectStream.close();
+//        }catch (FileNotFoundException e){
+//            e.printStackTrace();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }catch (ClassNotFoundException e){
+//            e.printStackTrace();
+//        }
+//        return  shoppingItems;
+//    }
 
     public enum SortCriteria{
         Name, Count;
