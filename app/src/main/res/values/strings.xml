@@ -12,7 +12,6 @@
     <string name="action_yes">Tak</string>
     <string name="action_no">Nie</string>
     <string name="clear_list_confirmation">Czy na pewno chcesz usunąć wszystkie produkty?</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings_criteria">Wybierz kryterium sortowania</string>
+    <string name="settings_name">sortingCriteria</string>
 </resources>

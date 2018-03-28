@@ -2,6 +2,8 @@ package com.example.tomasz123456.shoppinglist;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.location.Criteria;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private List<ShoppingItem> shoppingList = new ArrayList<>();
     private ShoppingItemsProvider itemsProvider = new ShoppingItemsProvider();
     private String listFilename = "shoppingListFile";
+    private String sortingPreferenceName = "sortingPreference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        chosenComparator = new ShoppingItemNameComparator();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(shoppingItemsAdapter);
 
+        chosenComparator = loadComparatorFromSettings(sortingPreferenceName);
         loadDataFromMemory(listFilename);
 //        getSampleData();
 
@@ -75,6 +80,19 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
+
+    private Comparator<ShoppingItem> SortCriteriaToComparator(SortCriteria criteria){
+        switch (criteria){
+            case Name:
+                return new ShoppingItemNameComparator();
+            case Count:
+                return  new ShoppingItemCountComparator();
+            default:
+                return new ShoppingItemNameComparator();
+        }
+    }
+
 
     private void loadDataFromMemory(String filename){
         List<ShoppingItem> items = loadShoppingListFromMemory(filename);
@@ -115,16 +133,16 @@ public class MainActivity extends AppCompatActivity {
             displaySettings();
             return true;
         }
-        if (id == R.id.action_sort_name) {
-            chosenComparator = new ShoppingItemNameComparator();
-            sortItems();
-            return true;
-        }
-        if (id == R.id.action_sort_count) {
-            chosenComparator = new ShoppingItemCountComparator();
-            sortItems();
-            return true;
-        }
+//        if (id == R.id.action_sort_name) {
+//            chosenComparator = new ShoppingItemNameComparator();
+//            sortItems();
+//            return true;
+//        }
+//        if (id == R.id.action_sort_count) {
+//            chosenComparator = new ShoppingItemCountComparator();
+//            sortItems();
+//            return true;
+//        }
         if(id == R.id.action_add_item){
             addItemClicked();
         }
@@ -137,7 +155,72 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displaySettings() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.settings_criteria);
 
+        LinearLayout layout = new LinearLayout(this );
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.FILL_PARENT,
+                RecyclerView.LayoutParams.FILL_PARENT));
+
+        final RadioGroup group = new RadioGroup(this  );
+
+        RadioButton nameRadio = new RadioButton(this);
+        nameRadio.setText(R.string.action_sort_name);
+        nameRadio.setId(R.id.nameOptionId);
+
+        group.getCheckedRadioButtonId();
+
+        RadioButton countRadio = new RadioButton(this);
+        countRadio.setText(R.string.action_sort_count);
+        countRadio.setId(R.id.countOptionId);
+
+        group.addView(nameRadio);
+        group.addView(countRadio);
+
+        builder.setView(group);
+
+        builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int id = group.getCheckedRadioButtonId();
+                if (id == R.id.nameOptionId){
+                    setSortingPreference(SortCriteria.Name);
+                }else if (id== R.id.countOptionId){
+                    setSortingPreference(SortCriteria.Count);
+                }
+                saveShoppingListInMemory(shoppingList, listFilename);
+                sortItems();
+            }
+        });
+        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+    private void setSortingPreference(SortCriteria criteria) {
+        saveSettings(criteria, sortingPreferenceName);
+        chosenComparator = SortCriteriaToComparator(criteria);
+        sortItems();
+    }
+
+
+    private void saveSettings(SortCriteria criteria, String settingsKey){
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(settingsKey, criteria.ordinal());
+        editor.commit();
+    }
+
+    private Comparator<ShoppingItem> loadComparatorFromSettings(String settingsKey) {
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        int value = sharedPreferences.getInt(settingsKey, 1);
+        SortCriteria criteria =  SortCriteria.values()[value] ;
+        return SortCriteriaToComparator(criteria);
     }
 
     private void sortItems() {
@@ -250,6 +333,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return  shoppingItems;
+    }
+
+    public enum SortCriteria{
+        Name, Count;
     }
 }
 
