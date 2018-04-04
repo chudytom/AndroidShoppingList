@@ -6,13 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <fragment
-        android:name="com.example.tomasz123456.shoppinglist.MainFragment"
-        android:id="@+id/main_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!--<fragment-->
+        <!--android:name="com.example.tomasz123456.shoppinglist.MainFragment"-->
+        <!--android:id="@+id/main_fragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
 
-    </fragment>
+    <!--</fragment>-->\
+    <FrameLayout
+        android:id="@+id/fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+    </FrameLayout
+        >
 
 
 </android.support.design.widget.CoordinatorLayout>

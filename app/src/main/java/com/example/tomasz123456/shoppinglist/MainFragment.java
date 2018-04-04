@@ -2,10 +2,10 @@ package com.example.tomasz123456.shoppinglist;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+//import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +22,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,14 +30,6 @@ import java.util.Comparator;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MainFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,7 +37,7 @@ public class MainFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private int sortInt;
     private String mParam2;
 
     // Possible problems with the Context. It's possible it needs to be passed in a constructor
@@ -76,10 +66,11 @@ public class MainFragment extends Fragment {
      * @return A new instance of fragment MainFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
+    public static MainFragment newInstance(int param1, String param2) {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
+
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -94,7 +85,7 @@ public class MainFragment extends Fragment {
 
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            sortInt = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -166,7 +157,7 @@ public class MainFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-//            displaySettings();
+            displaySettings();
             return true;
         }
 //        if (id == R.id.action_sort_name) {
@@ -244,6 +235,10 @@ public class MainFragment extends Fragment {
         shoppingItemsAdapter.notifyDataSetChanged();
     }
 
+    private void displaySettings(){
+        ((MainActivity)getActivity()).displaySettings();
+    }
+
 //    private void displaySettings() {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(getCurrentContext());
 //        builder.setTitle(R.string.settings_criteria);
@@ -317,8 +312,18 @@ public class MainFragment extends Fragment {
 //    }
 
     private void sortItems() {
+        resolveSortCriteria();
         Collections.sort(shoppingList, chosenComparator);
         shoppingItemsAdapter.notifyDataSetChanged();
+    }
+
+    private void resolveSortCriteria() {
+        if(sortInt == 0){
+            chosenComparator = new ShoppingItemNameComparator();
+        }
+        else if (sortInt == 1){
+            chosenComparator = new ShoppingItemCountComparator();
+        }
     }
 
     private void clearItemsClicked() {

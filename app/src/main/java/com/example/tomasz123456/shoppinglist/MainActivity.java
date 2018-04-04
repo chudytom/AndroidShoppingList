@@ -1,41 +1,23 @@
 package com.example.tomasz123456.shoppinglist;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.location.Criteria;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+//import android.support.v4.app.FragmentTransaction;
+//import android.app.Fragment;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+//import android.app.FragmentTransaction;
+//import android.app.FragmentTransaction;
+//import android.app.FragmentTransaction;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
+//import android.support.v4.app.Fragment;
 
 public class MainActivity extends AppCompatActivity
-implements  MainFragment.OnFragmentInteractionListener{
+implements  MainFragment.OnFragmentInteractionListener,
+AppPreferencesFragment.OnFragmentInteractionListener{
 //    private RecyclerView shoppingRecyclerView;
 //    private RecyclerView.Adapter shoppingListAdapter;
 //    private ArrayList<String> shoppingList = null;
@@ -51,68 +33,31 @@ implements  MainFragment.OnFragmentInteractionListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-//
-//        shoppingItemsAdapter = new ShoppingItemsAdapter(shoppingList);
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        recyclerView.setAdapter(shoppingItemsAdapter);
-//
-//        chosenComparator = loadComparatorFromSettings(sortingPreferenceName);
-//        loadDataFromMemory(listFilename);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        displayMainApp(AppPreferencesFragment.SortCriteria.Name);
     }
 
+    private void navigateToFragment(Fragment fragment){
+        FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_layout, fragment, "mainFragment");
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
+        transaction.commit();
+    }
+
+//    public void onButtonClicked(View view){
+//        displayMainApp(AppPreferencesFragment.SortCriteria.Count);
 //    }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            displaySettings();
-//            return true;
-//        }
-////        if (id == R.id.action_sort_name) {
-////            chosenComparator = new ShoppingItemNameComparator();
-////            sortItems();
-////            return true;
-////        }
-////        if (id == R.id.action_sort_count) {
-////            chosenComparator = new ShoppingItemCountComparator();
-////            sortItems();
-////            return true;
-////        }
-//        if(id == R.id.action_add_item){
-//            addItemClicked();
-//        }
-//
-//        if(id == R.id.action_clear_list){
-//            clearItemsClicked();
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    public void displaySettings(){
+        Fragment preferenceFragment = AppPreferencesFragment.newInstance("One", "Two");
+        navigateToFragment(preferenceFragment);
+    }
 
+    public void displayMainApp(AppPreferencesFragment.SortCriteria sortCriteria){
+
+        Fragment mainFragment = MainFragment.newInstance(sortCriteria.ordinal(), "two");
+        navigateToFragment(mainFragment);
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
