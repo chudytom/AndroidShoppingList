@@ -117,6 +117,7 @@ public class MainFragment extends Fragment {
         recyclerView.setAdapter(shoppingItemsAdapter);
 
 //        chosenComparator = loadComparatorFromSettings(sortingPreferenceName);
+        chosenComparator = new ShoppingItemNameComparator();
         loadDataFromMemory(listFilename);
 
 
