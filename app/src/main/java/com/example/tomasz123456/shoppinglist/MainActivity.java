@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Criteria;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -33,7 +34,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+implements  MainFragment.OnFragmentInteractionListener{
 //    private RecyclerView shoppingRecyclerView;
 //    private RecyclerView.Adapter shoppingListAdapter;
 //    private ArrayList<String> shoppingList = null;
@@ -56,21 +58,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        shoppingItemsAdapter = new ShoppingItemsAdapter(shoppingList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(shoppingItemsAdapter);
-
-        chosenComparator = loadComparatorFromSettings(sortingPreferenceName);
-        loadDataFromMemory(listFilename);
-//        getSampleData();
-
-
-//    prepareMovieData();
-
+//        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+//
+//        shoppingItemsAdapter = new ShoppingItemsAdapter(shoppingList);
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+//        recyclerView.setLayoutManager(mLayoutManager);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setAdapter(shoppingItemsAdapter);
+//
+//        chosenComparator = loadComparatorFromSettings(sortingPreferenceName);
+//        loadDataFromMemory(listFilename);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -317,38 +314,10 @@ public class MainActivity extends AppCompatActivity {
                 + original.substring(1).toLowerCase();
     }
 
-//    private  void saveShoppingListInMemory(List<ShoppingItem> shoppingItems, String filename){
-////        String filename = "shoppingListFile";
-////        File file = new File(context.getFilesDir(), filename);
-////        FileOutputStream outputStream;
-//        try {
-//            FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-//            ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
-//            objectStream.writeObject(shoppingItems);
-//            objectStream.close();
-//        }catch (FileNotFoundException e){
-//            e.printStackTrace();
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-//    private  List<ShoppingItem> loadShoppingListFromMemory(String filename){
-//        List<ShoppingItem> shoppingItems = new ArrayList<>();
-//        try{
-//            FileInputStream inputStream = openFileInput(filename);
-//            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
-//            shoppingItems = (List<ShoppingItem>) objectStream.readObject();
-//            objectStream.close();
-//        }catch (FileNotFoundException e){
-//            e.printStackTrace();
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }catch (ClassNotFoundException e){
-//            e.printStackTrace();
-//        }
-//        return  shoppingItems;
-//    }
+    }
 
     public enum SortCriteria{
         Name, Count;
