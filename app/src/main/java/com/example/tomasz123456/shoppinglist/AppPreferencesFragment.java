@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 
 import java.io.Console;
+import java.util.List;
 
 
 public class AppPreferencesFragment extends PreferenceFragmentCompat
@@ -26,7 +27,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public static final String KEY_LIST_PREFERENCE = "listPref";
+    public static final String KEY_LIST_PREFERENCE = "sortCriteria";
 
     private ListPreference mListPreference;
 
@@ -34,7 +35,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
     private String mParam1;
     private String mParam2;
 
-    private SortCriteria sortCriteria;
+    private MainActivity.SortCriteria sortCriteria;
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,32 +58,33 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//
-//        addPreferencesFromResource(R.layout.fragment_app_preferences);
-//    }
 
-    @Override
+
+//    @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.fragment_app_preferences, rootKey);
+        mListPreference = (ListPreference) findPreference("sortCriteria");
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-////        setButtonEnabled(false);
-//        return inflater.inflate(R.xml.fragment_app_preferences, container, false);
-//    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        mListPreference = this.getView().findViewById(R.id.);
+//        mListPreference = getPreferenceScreen().getPreference()
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -95,34 +97,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
     public void onButtonClicked(View view){
         displayMainApp();
     }
-
-//    private void setButtonEnabled(Boolean enabled){
-//        Button button =  getView().findViewById(R.id.accept_button);
-//        button.setEnabled(enabled);
-//    }
-
-//    public void onRadioButtonClicked(View view) {
-//        // Is the button now checked?
-//        boolean checked = ((RadioButton) view).isChecked();
-//
-//        // Check which radio button was clicked
-//        switch(view.getId()) {
-//            case R.id.radio_sort_count:
-//                if (checked) {
-//                    // Pirates are the best
-//                    sortCriteria = SortCriteria.Count;
-////                    setButtonEnabled(true);
-//                }
-//                    break;
-//            case R.id.radio_sort_name:
-//                if (checked) {
-//                    sortCriteria = SortCriteria.Name;
-////                    setButtonEnabled(true);
-//                }
-//                    // Ninjas rule
-//                    break;
-//        }
-//    }
 
     private void displayMainApp(){
         System.out.println("Change of screen requested");
@@ -152,21 +126,24 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
         if (key.equals(KEY_LIST_PREFERENCE)) {
             String sortValue = mListPreference.getValue();
             int sortInt =  Integer.parseInt(sortValue);
+            System.out.println("Value to save (int) is: " + sortInt);
             sortCriteria = convertToSortCritera(sortInt);
-            mListPreference.setSummary("Current value is " + mListPreference.getEntry().toString());
-            displayMainApp();
+            System.out.println("Value to save is: " + sortCriteria);
+            SharedPreferencesHelper.SaveSortCriteria(getContext(), sortCriteria);
             System.out.println("Value of list changed");
         }
     }
 
-    private SortCriteria convertToSortCritera(int value){
+
+
+    private MainActivity.SortCriteria convertToSortCritera(int value){
         switch (value){
             case 0:
-                return SortCriteria.Name;
+                return MainActivity.SortCriteria.Name;
             case 1:
-                return SortCriteria.Count;
+                return MainActivity.SortCriteria.Count;
             default:
-                return SortCriteria.Name;
+                return MainActivity.SortCriteria.Name;
         }
     }
 
@@ -183,9 +160,5 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public enum SortCriteria{
-        Name, Count;
     }
 }

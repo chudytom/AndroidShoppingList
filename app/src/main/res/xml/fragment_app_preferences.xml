@@ -6,7 +6,7 @@
         android:title="Sposób sortowania">
         <ListPreference
             android:title="@string/settings_criteria"
-            android:key="listPref"
+            android:key="sortCriteria"
             android:entries="@array/sortingListArray"
         android:entryValues="@array/sortingListValues" />
         <!--android:defaultValue="4"-->
@@ -15,40 +15,3 @@
 
 
 </PreferenceScreen>
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--tools:context=".AppPreferencesFragment">-->
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical">-->
-            <!--<RadioButton android:id="@+id/radio_sort_name"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/action_sort_name"-->
-                <!--&gt;</RadioButton>-->
-            <!--<RadioButton android:id="@+id/radio_sort_count"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/action_sort_count"-->
-                <!--&gt;</RadioButton>-->
-        <!--</RadioGroup>-->
-        <!--<Button-->
-            <!--android:id="@+id/accept_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/action_ok"-->
-            <!--android:onClick="onButtonClicked"/>-->
-    <!--</LinearLayout>-->
-
-<!--</FrameLayout>-->

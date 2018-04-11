@@ -37,7 +37,7 @@ public class MainFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private int sortInt;
+    private MainActivity.SortCriteria sortCriteria;
     private String mParam2;
 
     // Possible problems with the Context. It's possible it needs to be passed in a constructor
@@ -83,9 +83,9 @@ public class MainFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-
+        sortCriteria = SharedPreferencesHelper.GetSortCriteria(this.getContext());
+        chosenComparator = SortCriteriaToComparator(sortCriteria);
         if (getArguments() != null) {
-            sortInt = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -107,8 +107,6 @@ public class MainFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(shoppingItemsAdapter);
 
-//        chosenComparator = loadComparatorFromSettings(sortingPreferenceName);
-        chosenComparator = new ShoppingItemNameComparator();
         loadDataFromMemory(listFilename);
 
 
@@ -144,15 +142,10 @@ public class MainFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -160,16 +153,7 @@ public class MainFragment extends Fragment {
             displaySettings();
             return true;
         }
-//        if (id == R.id.action_sort_name) {
-//            chosenComparator = new ShoppingItemNameComparator();
-//            sortItems();
-//            return true;
-//        }
-//        if (id == R.id.action_sort_count) {
-//            chosenComparator = new ShoppingItemCountComparator();
-//            sortItems();
-//            return true;
-//        }
+
         if(id == R.id.action_add_item){
             addItemClicked();
         }
@@ -181,23 +165,13 @@ public class MainFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
 
-    private Comparator<ShoppingItem> SortCriteriaToComparator(SortCriteria criteria){
+    private Comparator<ShoppingItem> SortCriteriaToComparator(MainActivity.SortCriteria criteria){
         switch (criteria){
             case Name:
                 return new ShoppingItemNameComparator();
@@ -312,18 +286,9 @@ public class MainFragment extends Fragment {
 //    }
 
     private void sortItems() {
-        resolveSortCriteria();
+        chosenComparator = SortCriteriaToComparator(sortCriteria);
         Collections.sort(shoppingList, chosenComparator);
         shoppingItemsAdapter.notifyDataSetChanged();
-    }
-
-    private void resolveSortCriteria() {
-        if(sortInt == 0){
-            chosenComparator = new ShoppingItemNameComparator();
-        }
-        else if (sortInt == 1){
-            chosenComparator = new ShoppingItemCountComparator();
-        }
     }
 
     private void clearItemsClicked() {
@@ -402,11 +367,6 @@ public class MainFragment extends Fragment {
 
         return  original.substring(0, 1).toUpperCase()
                 + original.substring(1).toLowerCase();
-    }
-
-
-    public enum SortCriteria{
-        Name, Count;
     }
 
     private Context getCurrentContext()
