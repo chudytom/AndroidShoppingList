@@ -62,8 +62,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
         return fragment;
     }
 
-
-
 //    @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.fragment_app_preferences, rootKey);
@@ -74,8 +72,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
     @Override
     public void onResume() {
         super.onResume();
-//        mListPreference = this.getView().findViewById(R.id.);
-//        mListPreference = getPreferenceScreen().getPreference()
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -134,8 +130,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
         }
     }
 
-
-
     private MainActivity.SortCriteria convertToSortCritera(int value){
         switch (value){
             case 0:
@@ -146,17 +140,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener{
                 return MainActivity.SortCriteria.Name;
         }
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
